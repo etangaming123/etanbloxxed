@@ -14,6 +14,7 @@ import json
 import random
 import traceback
 import pickle
+import subprocess
 
 # [ configuration ]
 if not os.path.exists("etanbloxxedconfig.pkl"):
@@ -34,11 +35,11 @@ API_KEY = thingo["ipinfoapi"]
 userid = thingo["UserID"]
 
 # [ variables ]
-VERSION_NO = "PUBLIC_1.03.11"
+VERSION_NO = "windows_1.03.21"
 TEST_MODE = False
 
 CLIENT_ID = 1229562048640319616
-log_path = os.path.expanduser("~/Library/Logs/Roblox")
+log_path = os.path.expanduser("AppData\Local\Roblox\logs")
 RPC = Presence(client_id=CLIENT_ID)
 cachedstatus = 0
 cachedipadress = ""
@@ -55,6 +56,23 @@ notification = Notify()
 notification.title = "etanbloxxed"
 
 bloxstrapRPCCustomState = {}
+
+# [ opening roblox ]
+def find_latest_modified_directory(folder_path):
+  latest_modified_dir = None
+  latest_modification_time = 0
+
+  for dir_name in os.listdir(folder_path):
+    dir_path = os.path.join(folder_path, dir_name)
+    if os.path.isdir(dir_path):
+      modification_time = os.path.getmtime(dir_path)
+      if modification_time > latest_modification_time:
+        latest_modified_dir = dir_path
+        latest_modification_time = modification_time
+
+  return latest_modified_dir
+subprocess.call(f"{os.path.join(find_latest_modified_directory(os.path.expanduser("~/AppData/Local/Roblox/versions")), "RobloxPlayerBeta")}")
+print("Roblox opened")
 
 # [ functions ] 
 def printDebug(text): # i rarely use this oops
@@ -313,7 +331,7 @@ def follow(thefile): # also gpt written
             continue
         yield line
 
-print(f"Welcome to etanbloxxed!\nThis is basically bloxstrap but for macos and poorly optimised\n\nYou are running version {VERSION_NO}.\n")
+print(f"Welcome to etanbloxxed!\nThis is basically bloxstrap but poorly optimised\n\nYou are running version {VERSION_NO}.\n")
 if __name__ == "__main__": # idk why but gpt added this so (im kidding it has somethign to do with modules or something IDK)
     while True:
         try:
