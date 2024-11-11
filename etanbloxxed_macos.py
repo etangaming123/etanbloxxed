@@ -18,12 +18,12 @@ import pickle
 # [ configuration ]
 if not os.path.exists("etanbloxxedconfig.pkl"):
     print("etanbloxxed config file not found! Please configure your settings.")
-    thingo = {"UserID": 0, "ipinfoapi": 0, "RobloxDirectory": "/Applications/more/Roblox.app"}
+    thingo = {"UserID": 0, "ipinfoapi": 0, "RobloxDirectory": "/Applications/Roblox.app"}
     print("Enter in your Roblox user id. Leaving this blank will not show your Roblox profile picture on etanbloxxed.")
     thingo["UserID"] = input("UserID | ")
     print("Enter in an ipinfo.io api key. A free account can be created at https://ipinfo.io/signup, and a free api key can be created, granting you 50k requests a month. Leaving this blank will not give you server info whenever you join a Roblox server.")
     thingo["ipinfoapi"] = input("API key | ")
-    print("Enter in where your Roblox app is located. Leave blank to use default (/Applications/more/Roblox.app)")
+    print("Enter in where your Roblox app is located. Leave blank to use default (/Applications/Roblox.app)")
     temp = input("Directory | ")
     if not temp == "":
         thingo["RobloxDirectory"] = temp
