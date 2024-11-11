@@ -63,7 +63,7 @@ def printDebug(text): # i rarely use this oops
         print("DEBUG | " + text)
 
 def getrandomtext(): # random text bc why not :3
-    randomtext = ["Lorem Ipsum", "gpt'd code!", "nicos nextbots is better than evade", "PHIGHTING!", "etan's gamers", "javascript is pain", "what is up with the new roblox font?", "nil", "phighting took over me", "i really tried", "fflags are overpowered", "guys i dont love catshot what are you on"]
+    randomtext = ["github powered!", "hello chat", "go join etan's gamers group", "i love underrated roblox games", "inflation goes crazy"]
     if random.randint(1, 33) == 33:
         print("1 in 33 chance!")
         return "there is a 1 in 33 chance of this appearing :3"
