@@ -222,17 +222,17 @@ def updateRpc(newrpc, placeid, state): # yeah
     global bloxstrapRPCCustomState
     try:
         if not newrpc == "":
-            RPC.update(details=f"Roblox - {newrpc}", state=state, large_image=f"https://assetdelivery.roblox.com/v1/asset/?id={imageassetid}", large_text=newrpc, small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{"label": "etan's gamers group", "url": "https://www.roblox.com/groups/15518039/etans-gamers/"}, {"label": "My Current Game", "url": f"https://www.roblox.com/games/{placeid}/"}])
-            bloxstrapRPCCustomState = {"details": f"Roblox - {newrpc}", "state": state, "large_image": f"https://assetdelivery.roblox.com/v1/asset/?id={imageassetid}", "large_text": newrpc, "small_image": getUserPFP(), "small_text": getUsername(), "start": time.time(), "buttons": [{"label": "etan's gamers group", "url": "https://www.roblox.com/groups/15518039/etans-gamers/"}, {"label": "My Current Game", "url": f"https://www.roblox.com/games/{placeid}/"}]}
+            RPC.update(details=f"Roblox - {newrpc}", state=state, large_image=f"https://assetdelivery.roblox.com/v1/asset/?id={imageassetid}", large_text=newrpc, small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{"label": "get etanbloxxed", "url": "https://github.com/etangaming123/etanbloxxed"}, {"label": "My Current Game", "url": f"https://www.roblox.com/games/{placeid}/"}])
+            bloxstrapRPCCustomState = {"details": f"Roblox - {newrpc}", "state": state, "large_image": f"https://assetdelivery.roblox.com/v1/asset/?id={imageassetid}", "large_text": newrpc, "small_image": getUserPFP(), "small_text": getUsername(), "start": time.time(), "buttons": [{"label": "get etanbloxxed", "url": "https://github.com/etangaming123/etanbloxxed"}, {"label": "My Current Game", "url": f"https://www.roblox.com/games/{placeid}/"}]}
             print("RPC set to " + newrpc)
             hasRPCwithextras = True
         else:
             if not placeid == "":
                 # this is when we have the placeid but getting the game name fails
                 hasRPCwithextras = False
-                RPC.update(details=f"Roblox - Game ID: {placeid}", state=state, large_image="etanbloxxed_main", large_text=placeid, small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{"label": "etan's gamers group", "url": "https://www.roblox.com/groups/15518039/etans-gamers/"}, {"label": "My Current Game", "url": f"https://www.roblox.com/games/{placeid}/"}])
+                RPC.update(details=f"Roblox - Game ID: {placeid}", state=state, large_image="etanbloxxed_main", large_text=placeid, small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{"label": "get etanbloxxed", "url": "https://github.com/etangaming123/etanbloxxed"}, {"label": "My Current Game", "url": f"https://www.roblox.com/games/{placeid}/"}])
             else:
-                RPC.update(details=f"Roblox - Unknown Game", state=state, large_image="etanbloxxed_error", large_text="idk what this guys playing", small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{"label": "etan's gamers group", "url": "https://www.roblox.com/groups/15518039/etans-gamers/"}])
+                RPC.update(details=f"Roblox - Unknown Game", state=state, large_image="etanbloxxed_error", large_text="idk what this guys playing", small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{"label": "get etanbloxxed", "url": "https://github.com/etangaming123/etanbloxxed"}])
             print("RPC set with default message")
     except Exception as e:
         print("An error occured while setting RPC: " + str(e))
@@ -273,7 +273,7 @@ def updateCustomRPC(command_data, gamename, current_state, imageid): # when game
                 current_state["start"] = start_time
                 current_state["end"] = end_time
         
-        current_state["buttons"] = [{"label": "etan's gamers group", "url": "https://www.roblox.com/groups/15518039/etans-gamers/"}, {"label": "My Current Game", "url": f"https://www.roblox.com/games/{placeid}/"}]
+        current_state["buttons"] = [{"label": "get etanbloxxed", "url": "https://github.com/etangaming123/etanbloxxed"}, {"label": "My Current Game", "url": f"https://www.roblox.com/games/{placeid}/"}]
         printDebug(f"current state --> {str(current_state)}")
         RPC.update(**current_state)
         print(f"state = {current_state['state']}, details = {current_state['details']}")
@@ -282,7 +282,7 @@ def idleRpc(): # set rpc to idle
     global hasRPCwithextras
     hasRPCwithextras = False
     try:
-        RPC.update(details="Roblox", state="On the home screen", large_image="etanbloxxed_idle", large_text=getrandomtext(), small_image=getUserPFP(), small_text=getUsername(), buttons=[{"label": "etan's gamers group", "url": "https://www.roblox.com/groups/15518039/etans-gamers/"}])
+        RPC.update(details="Roblox", state="On the home screen", large_image="etanbloxxed_idle", large_text=getrandomtext(), small_image=getUserPFP(), small_text=getUsername(), buttons=[{"label": "get etanbloxxed", "url": "https://github.com/etangaming123/etanbloxxed"}])
     except Exception as e:
         traceback.print_exc()
         print("An error occured while setting RPC: " + str(e))
