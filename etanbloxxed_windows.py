@@ -201,9 +201,9 @@ def getUsername():
     if response.status_code == 200:
         data = response.json()
         if data["hasVerifiedBadge"]:
-            return f"Playing as {data["displayName"]} ☑️ (@{data["name"]})"
+            return f"Playing as {data['displayName']} ☑️ (@{data['name']})"
         else:
-            return f"Playing as {data["displayName"]} (@{data["name"]})"
+            return f"Playing as {data['displayName']} (@{data['name']})"
     else:
         return "Failed to get user info!"
 
