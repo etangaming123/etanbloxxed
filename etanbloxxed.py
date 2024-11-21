@@ -336,7 +336,7 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
         userinput = input("> ")
         if userinput == "cmds":
             print("A list of valid commands:")
-            cmds = {"open": "runs roblox", "settings": "modify your settings"}
+            cmds = {"open": "runs roblox", "settings": "modify your settings", "exit": "exits etanbloxxed"}
             for command, description in cmds.keys():
                 print(f"{command} - {description}")
         elif userinput == "settings":
@@ -346,6 +346,10 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
             if askforyesorno("Modify options? | "):
                 with open("etanbloxxedconfig.pkl", "wb") as file:
                     pickle.dump(askconfiguration(), file)
+        
+        elif userinput == "exit":
+            print("Goodbye!")
+            exit()
 
         elif userinput == "open":
             if not iswindows:
