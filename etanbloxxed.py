@@ -17,7 +17,7 @@ import pickle
 import subprocess
 
 # [ variables ]
-VERSION_NO = "RELEASE_1.00.00"
+VERSION_NO = "RELEASE_1.00.01"
 CONFIG_NO = "1.00.00"
 DEBUG = False
 
@@ -27,6 +27,7 @@ RPC = Presence(client_id=CLIENT_ID)
 cachedstatus = 0
 cachedipadress = ""
 hasRPCwithextras = False
+close = False
 
 placeid = ""
 rootplaceid = ""
@@ -34,6 +35,7 @@ creatorname = ""
 gamename = ""
 imageassetid = ""
 ServerType = "Public server"
+islagging = False
 
 notification = Notify()
 notification.title = "etanbloxxed"
@@ -47,11 +49,11 @@ def printDebug(text): # i rarely use this oops
     if DEBUG:
         print("DEBUG | " + text)
 
-def getrandomtext(): # random text bc why not :3
+def getrandomtext(): # random text bc why not :3 // you can change these if you want to 
     randomtext = ["github powered!", "hello chat", "go join etan's gamers group", "i love underrated roblox games", "inflation goes crazy"]
     if random.randint(1, 33) == 33:
         print("1 in 33 chance!")
-        return "there is a 1 in 33 chance of this appearing :3"
+        return "there is a 1 in 33 chance of this appearing :3" # you can also change this
     else:
         thechoice = random.choice(randomtext)
         return thechoice
@@ -71,7 +73,7 @@ def follow(thefile): # also gpt written
             continue
         yield line
 
-def find_latest_modified_directory(folder_path):
+def find_latest_modified_directory(folder_path): # also also gpt written
   latest_modified_dir = None
   latest_modification_time = 0
 
@@ -85,7 +87,7 @@ def find_latest_modified_directory(folder_path):
 
   return latest_modified_dir
 
-def askforyesorno(ask):
+def askforyesorno(ask): # not gpt written surprisingly
     yesdefinitions = ["yes", "y", "true", "yeah"]
     nodefinitions = ["no", "n", "false", "nah"]
     while True:
@@ -97,7 +99,7 @@ def askforyesorno(ask):
         else:
             print("Could not tell if that was a yes or no")
 
-def askconfiguration():
+def askconfiguration(): # im gonna rewrite this bruh
     thingo = {"configVer": "1.00.00", "UserID": 0, "ipinfoapi": 0, "isWindows": False, "RobloxDirectory": "/Applications/Roblox.app"}
     print("Enter in your Roblox user id. Leaving this blank will not show your Roblox profile picture on etanbloxxed.")
     thingo["UserID"] = input("UserID | ")
@@ -115,43 +117,42 @@ def askconfiguration():
 # --requests--
 # MESSY CODE AHEAD BTW
 def getgamedetails(place_id): # getting the details of the game, like name, publisher etc
-    havetotryagain = False
-    primaryurl = f"https://apis.roproxy.com/universes/v1/places/{place_id}/universe"
-    primaryresponse = requests.get(primaryurl)
     def fallback_getplace(place_id):
-        global universeId
         fallback_url = f"https://apis.roblox.com/universes/v1/places/{place_id}/universe"
         fallback_response = requests.get(fallback_url)
         if fallback_response.status_code == 200:
             fallback_data = fallback_response.json()
             if fallback_data and "universeId" in fallback_data:
-                universeId = fallback_data["universeId"]
+                return fallback_data["universeId"]
+    havetotryagain = False
+    primaryurl = f"https://apis.roproxy.com/universes/v1/places/{place_id}/universe"
+    primaryresponse = requests.get(primaryurl) 
     if primaryresponse.status_code == 200:
         data = primaryresponse.json()
         if data and "universeId":
             universeId = data["universeId"]
         else:
-            fallback_getplace(place_id)
+            universeId = fallback_getplace(place_id)
     else:
-        fallback_getplace(place_id)
+        universeId = fallback_getplace(place_id)
     
     def fallback_getinfo(universeid):
-            fallback_url = f"https://games.roblox.com/v1/games?universeIds={universeId}"
-            fallback_response = requests.get(fallback_url)
-            if fallback_response.status_code == 200:
-                data = primaryresponse.json()["data"][0]
-                if data:
-                    try:
-                        rootPlaceId = data["rootPlaceId"]
-                        name = data["name"]
-                        if data["creator"]["hasVerifiedBadge"]:
-                            creator = f"by {data['creator']['name']} ☑️"
-                        else:
-                            creator = f"by {data['creator']['name']}"
-                        return rootPlaceId, name, creator
-                    except KeyError:
-                        print("Couldn't find all info...")
-                        return "", "", ""
+        fallback_url = f"https://games.roblox.com/v1/games?universeIds={universeid}"
+        fallback_response = requests.get(fallback_url)
+        if fallback_response.status_code == 200:
+            data = primaryresponse.json()["data"][0]
+            if data:
+                try:
+                    rootPlaceId = data["rootPlaceId"]
+                    name = data["name"]
+                    if data["creator"]["hasVerifiedBadge"]:
+                        creator = f"by {data['creator']['name']} ☑️"
+                    else:
+                        creator = f"by {data['creator']['name']}"
+                    return rootPlaceId, name, creator
+                except KeyError:
+                    print("Couldn't find all info...")
+                    return "", "", ""
     primaryurl = f"https://games.roproxy.com/v1/games?universeIds={universeId}"
     primaryresponse = requests.get(primaryurl)
     if primaryresponse.status_code == 200:
@@ -171,11 +172,11 @@ def getgamedetails(place_id): # getting the details of the game, like name, publ
             return fallback_getinfo(universeId)
     else:
         return fallback_getinfo(universeId)
-    
+        
     if havetotryagain:
         return fallback_getinfo(universeId)
 
-def getUserPFP():
+def getUserPFP(): # user pfp as url so that it shows up on discord
     global userid
     if userid == "":
         return "etanbloxxed_main"
@@ -187,7 +188,7 @@ def getUserPFP():
     else:
         return "etanbloxxed_main"
 
-def getUsername():
+def getUsername(): # username and displayname
     global userid
     if userid == "":
         return "etanbloxxed is a knockoff bloxstrap rpc, go check out bloxstrap!"
@@ -259,7 +260,7 @@ def updateRpc(newrpc, placeid, state): # yeah
         print("An error occured while setting RPC!")
         traceback.print_exc()
 
-def updateCustomRPC(command_data, gamename, current_state, imageid): # when games have [BloxstrapRPC]
+def updateCustomRPC(command_data, gamename, current_state): # when games have [BloxstrapRPC]
     global placeid
     if command_data["command"] == "SetRichPresence":
         data = command_data["data"]
@@ -321,7 +322,7 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
         thingo = pickle.load(file)
     if not thingo["configVer"] == CONFIG_NO:
         print("etanbloxxed config is out of date!\nold settings:")
-        for setin, value in thingo.keys():
+        for setin, value in thingo.items():
             print(f"{setin} - {value}")
         with open("etanbloxxedconfig.pkl", "wb") as file:
             pickle.dump(askconfiguration(), file)
@@ -337,11 +338,11 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
         if userinput == "cmds":
             print("A list of valid commands:")
             cmds = {"open": "runs roblox", "settings": "modify your settings", "exit": "exits etanbloxxed"}
-            for command, description in cmds.keys():
+            for command, description in cmds.items():
                 print(f"{command} - {description}")
         elif userinput == "settings":
             print("These are your current settings:")
-            for setin, value in thingo.keys():
+            for setin, value in thingo.items():
                 print(f"{setin} - {value}")
             if askforyesorno("Modify options? | "):
                 with open("etanbloxxedconfig.pkl", "wb") as file:
@@ -357,17 +358,16 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
             else:
                 subprocess.call(f"{os.path.join(find_latest_modified_directory(os.path.expanduser("~/AppData/Local/Roblox/versions")), "RobloxPlayerBeta")}")
             print("Opened Roblox")
-            while True:
-                try:
-                    print("Connecting to Discord...")
-                    Presence.connect(self=RPC)
-                    idleRpc()
-                    print("Connected to Discord")
-                    break
-                except Exception:
-                    print("Failed to connect to Discord!")
-                    traceback.print_exc()
-                    exit()
+            close = False
+            try:
+                print("Connecting to Discord...")
+                Presence.connect(self=RPC)
+                idleRpc()
+                print("Connected to Discord")
+            except Exception:
+                print("Failed to connect to Discord!")
+                traceback.print_exc()
+                exit()
 
             print("\nFinding latest log file...")
             log_file = find_latest_log_file(log_path)
@@ -419,6 +419,7 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
                                 print("Detected disconnect!")
                                 bloxstrapRPCCustomState.clear()
                                 idleRpc()
+                                islagging = False
                                 cachedstatus = 0
                                     
                             if "Connecting to UDMUX server" in line and cachedstatus == 0: # Handle player actually connecting to server (this mostly happens after getting the place information)
@@ -428,15 +429,16 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
                                     cachedipadress = match.group(1)
                                     geolocationinfo = get_geolocation(cachedipadress) # Get geolocation of current server
                                     print("IP Address of UDMUX server:", cachedipadress)
-                                    print("Connected to: " + geolocationinfo.get('city') + ", " + geolocationinfo.get('region'))
+                                    print(f"Connected to: {geolocationinfo.get('city')}, {geolocationinfo.get('region')}")
                                     if not gamename == "":
-                                        notification.message = "Location: " + geolocationinfo.get('city') + ", " + geolocationinfo.get('region') + "\nGame: " + gamename
+                                        notification.message = f"Location: {geolocationinfo.get('city')}, {geolocationinfo.get('region')}"
+                                        notification.send()
                                         if ServerType == "Private Server":
                                             updateRpc(gamename, placeid, ServerType)
                                         else:
                                             updateRpc(gamename, placeid, creatorname)
                                     else:
-                                        notification.message = "Location: " + geolocationinfo.get('city') + ", " + geolocationinfo.get('region') + "\nFailed to detect game!"
+                                        notification.message = f"Location: {geolocationinfo.get('city')}, {geolocationinfo.get('region')}"
                                         updateRpc("", "", ServerType)
                                         notification.send()
                                 else:
@@ -447,21 +449,25 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
                             if "destroyLuaApp: (stage:LuaApp) blocking:true." in line: # Handle roblox closing
                                 print("Detected Roblox client closed, closing RPC...")
                                 RPC.close()
-                                print("Goodbye!")
-                                break
+                                close = True
                         
                             if "Found new version and the updater launched. Drain reporting and quit." in line: # Handle roblox updating
                                 print("Roblox is updating. Rerun etanbloxxed when it is done updating.")
                                 RPC.close()
-                                break
+                                close = True
 
                             if "[BloxstrapRPC]" in line: # ohhh crap bloxstrap rpc !!
                                 rpc_data = line.split("[BloxstrapRPC] ")[1].strip()
                                 command_data = json.loads(rpc_data)
-                                updateCustomRPC(command_data, gamename, bloxstrapRPCCustomState, imageassetid)
-                                
+                                updateCustomRPC(command_data, gamename, bloxstrapRPCCustomState)
+
+                            if close == True:
+                                break
+
                             time.sleep(0)
 
+                        if close == True:
+                            break
                     except Exception as e:
                         if not "'utf-8' codec can't decode" in str(e): # Ignore that error
                             print("An error occured!")
@@ -470,7 +476,6 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
                     except KeyboardInterrupt: 
                         print("Ctrl + c detected, closing RPC...")
                         RPC.close()
-                        print("Goodbye!")
                         break
 else:
     print("HOW")
