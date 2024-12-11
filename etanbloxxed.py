@@ -17,7 +17,7 @@ import pickle
 import subprocess
 
 # [ variables ]
-VERSION_NO = "RELEASE_1.00.01"
+VERSION_NO = "RELEASE_1.00.02"
 CONFIG_NO = "1.00.00"
 DEBUG = False
 
@@ -47,7 +47,13 @@ bloxstrapRPCCustomState = {}
 def printDebug(text): # i rarely use this oops
     global DEBUG
     if DEBUG:
-        print("DEBUG | " + text)
+        print("DEBUG | " + str(text))
+
+def printTemporary(text):
+    print(text, end="\r")
+
+def clear():
+    print("                                            ", end="\r")
 
 def getrandomtext(): # random text bc why not :3 // you can change these if you want to 
     randomtext = ["github powered!", "hello chat", "go join etan's gamers group", "i love underrated roblox games", "inflation goes crazy"]
@@ -117,116 +123,104 @@ def askconfiguration(): # im gonna rewrite this bruh
 # --requests--
 # MESSY CODE AHEAD BTW
 def getgamedetails(place_id): # getting the details of the game, like name, publisher etc
-    def fallback_getplace(place_id):
-        fallback_url = f"https://apis.roblox.com/universes/v1/places/{place_id}/universe"
-        fallback_response = requests.get(fallback_url)
-        if fallback_response.status_code == 200:
-            fallback_data = fallback_response.json()
-            if fallback_data and "universeId" in fallback_data:
-                return fallback_data["universeId"]
-    havetotryagain = False
-    primaryurl = f"https://apis.roproxy.com/universes/v1/places/{place_id}/universe"
-    primaryresponse = requests.get(primaryurl) 
-    if primaryresponse.status_code == 200:
-        data = primaryresponse.json()
-        if data and "universeId":
-            universeId = data["universeId"]
-        else:
-            universeId = fallback_getplace(place_id)
-    else:
-        universeId = fallback_getplace(place_id)
-    
-    def fallback_getinfo(universeid):
-        fallback_url = f"https://games.roblox.com/v1/games?universeIds={universeid}"
-        fallback_response = requests.get(fallback_url)
-        if fallback_response.status_code == 200:
-            data = primaryresponse.json()["data"][0]
-            if data:
-                try:
-                    rootPlaceId = data["rootPlaceId"]
-                    name = data["name"]
-                    if data["creator"]["hasVerifiedBadge"]:
-                        creator = f"by {data['creator']['name']} ☑️"
-                    else:
-                        creator = f"by {data['creator']['name']}"
-                    return rootPlaceId, name, creator
-                except KeyError:
-                    print("Couldn't find all info...")
-                    return "", "", ""
-    primaryurl = f"https://games.roproxy.com/v1/games?universeIds={universeId}"
-    primaryresponse = requests.get(primaryurl)
-    if primaryresponse.status_code == 200:
-        data = primaryresponse.json()["data"][0]
-        if data:
-            try:
+    attemptno = 1
+    while True:
+        printTemporary(f"Getting game universe id... Attempt {attemptno}")
+        try:
+            url = f"https://apis.roblox.com/universes/v1/places/{place_id}/universe"
+            response = requests.get(url) 
+            data = response.json()
+            if data and "universeId":
+                universeId = data["universeId"]
+                break
+        except Exception:
+            attemptno += 1
+            time.sleep(1)
+            clear()
+    attemptno = 1
+    clear()
+    while True:
+        try:
+            printTemporary(f"Getting game details... Attempt {attemptno}")
+            url = f"https://games.roblox.com/v1/games?universeIds={universeId}"
+            response = requests.get(url)
+            notrealdatalol = response.json()
+            if notrealdatalol:
+                data = notrealdatalol.get("data")[0]
                 rootPlaceId = data["rootPlaceId"]
                 name = data["name"]
                 if data["creator"]["hasVerifiedBadge"]:
                     creator = f"by {data['creator']['name']} ☑️"
                 else:
                     creator = f"by {data['creator']['name']}"
-                return rootPlaceId, name, creator
-            except KeyError:
-                havetotryagain = True
-        else:
-            return fallback_getinfo(universeId)
-    else:
-        return fallback_getinfo(universeId)
-        
-    if havetotryagain:
-        return fallback_getinfo(universeId)
+                if rootPlaceId is not None and name is not None and creator is not None:
+                    clear()
+                    break
+        except Exception:
+            attemptno += 1
+            time.sleep(1)
+            clear()
+    clear()
+    print("Got game details!")
+    return rootPlaceId, name, creator
 
 def getUserPFP(): # user pfp as url so that it shows up on discord
     global userid
     if userid == "":
         return "etanbloxxed_main"
-    url = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={userid}&size=48x48&format=Png&isCircular=false"
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        return data["data"][0]["imageUrl"]
-    else:
-        return "etanbloxxed_main"
+    attemptno = 1
+    while True:
+        printTemporary(f"Getting user thumbnail... Attempt {attemptno}")
+        try:
+            url = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={userid}&size=48x48&format=Png&isCircular=false"
+            response = requests.get(url)
+            data = response.json()
+            clear()
+            return data["data"][0]["imageUrl"]
+        except Exception:
+            attemptno += 1
+            time.sleep(1)
+            clear()
 
 def getUsername(): # username and displayname
     global userid
     if userid == "":
         return "etanbloxxed is a knockoff bloxstrap rpc, go check out bloxstrap!"
-    url = f"https://users.roblox.com/v1/users/{userid}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        if data["hasVerifiedBadge"]:
-            return f"Playing as {data['displayName']} ☑️ (@{data['name']})"
-        else:
-            return f"Playing as {data['displayName']} (@{data['name']})"
-    else:
-        return "Failed to get user info!"
+    attemptno = 1
+    while True:
+        printTemporary(f"Getting username and displayname... Attempt {attemptno}")
+        try:
+            url = f"https://users.roblox.com/v1/users/{userid}"
+            response = requests.get(url)
+            data = response.json()
+            if data["hasVerifiedBadge"]:
+                clear()
+                return f"Playing as {data['displayName']} ☑️ (@{data['name']})"
+            else:
+                clear()
+                return f"Playing as {data['displayName']} (@{data['name']})"
+        except Exception:
+            attemptno += 1
+            time.sleep(1)
+            clear()
 
 def getImageAssetId(rootplaceid): # game image
-    def getfallback(rootplaceid):
-        fallback_url = f"https://economy.roblox.com/v2/assets/{rootplaceid}/details"
-        fallback_response = requests.get(fallback_url)
-        if fallback_response.status_code == 200:
-            fallback_data = fallback_response.json()
-            if fallback_data and "IconImageAssetId" in fallback_data:
-                printDebug(f"getassetid --> asset id {fallback_data['IconImageAssetId']}")
-                return fallback_data["IconImageAssetId"]
-    primaryurl = f"https://economy.roproxy.com/v2/assets/{rootplaceid}/details"
-    primaryresponse = requests.get(primaryurl)
-    if primaryresponse.status_code == 200:
-        data = primaryresponse.json()
-        if data and "universeId":
-            printDebug(f"getassetid --> asset id {data['IconImageAssetId']}")
-            return data["IconImageAssetId"]
-        else:
-            return getfallback(rootplaceid)
-    else:
-        return getfallback(rootplaceid)
-    
-    return ""
+    attemptno = 1
+    while True:
+        printTemporary(f"Getting image asset id... Attempt {attemptno}")
+        try:
+            url = f"https://economy.roblox.com/v2/assets/{rootplaceid}/details"
+            response = requests.get(url)
+            data = response.json()
+            if data and "universeId":
+                clear()
+                return data["IconImageAssetId"]
+        except Exception:
+            attemptno += 1
+            time.sleep(1)
+            clear()
 
-def get_geolocation(ip_address): # get the country of a server
+def get_geolocation(ip_address): # get the country of a server (this thing does not have a while true loop because we don't wanna waste all your requests, do we?)
     if API_KEY == "":
         return "None"
     url = f'https://ipinfo.io/{ip_address}?token={API_KEY}'
@@ -249,8 +243,7 @@ def updateRpc(newrpc, placeid, state): # yeah
             print("RPC set to " + newrpc)
             hasRPCwithextras = True
         else:
-            if not placeid == "":
-                # this is when we have the placeid but getting the game name fails
+            if not placeid == "": # this is when we have the placeid but getting the game name fails
                 hasRPCwithextras = False
                 RPC.update(details=f"Roblox - Game ID: {placeid}", state=state, large_image="etanbloxxed_main", large_text=placeid, small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{"label": "get etanbloxxed", "url": "https://github.com/etangaming123/etanbloxxed"}, {"label": "My Current Game", "url": f"https://www.roblox.com/games/{placeid}/"}])
             else:
@@ -264,7 +257,6 @@ def updateCustomRPC(command_data, gamename, current_state): # when games have [B
     global placeid
     if command_data["command"] == "SetRichPresence":
         data = command_data["data"]
-        printDebug(f"command data --> {str(command_data)}\ncurrentstateinput --> {str(current_state)}")
         if "state" in data:
             if data["state"] == "":
                 current_state["state"] = f"Roblox - {gamename}"
@@ -296,7 +288,6 @@ def updateCustomRPC(command_data, gamename, current_state): # when games have [B
                 current_state["end"] = end_time
         
         current_state["buttons"] = [{"label": "get etanbloxxed", "url": "https://github.com/etangaming123/etanbloxxed"}, {"label": "My Current Game", "url": f"https://www.roblox.com/games/{placeid}/"}]
-        printDebug(f"current state --> {str(current_state)}")
         RPC.update(**current_state)
         print(f"state = {current_state['state']}, details = {current_state['details']}")
 
@@ -311,7 +302,10 @@ def idleRpc(): # set rpc to idle
 
 # [ startup ]
 if __name__ == "__main__": # idk why but gpt added this so (im kidding it has somethign to do with modules or something IDK)
+    literally_all_the_new_features = ["What's new in the latest etanbloxxed update:", "> No longer uses roproxy", "> Requests now continue forever until successful", "> Other stuff that i forgor its 12am rn"] # no way new noticeboard
     print(f"Welcome to etanbloxxed!\nThis is basically bloxstrap but bad and poorly optimised\n\nYou are running version {VERSION_NO}.\n")
+    for item in literally_all_the_new_features:
+        print(item)
     if not os.path.exists("etanbloxxedconfig.pkl"): # check if etanbloxxed config exists
         print("etanbloxxed config file does not exist!")
         with open("etanbloxxedconfig.pkl", "wb") as file:
@@ -332,7 +326,7 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
     iswindows = thingo["isWindows"]
     robloxdir = thingo["RobloxDirectory"]
 
-    while True:
+    while True: # HERE COMES ALL THE NESTED CODE
         print("Enter a command (cmds for commands)")
         userinput = input("> ")
         if userinput == "cmds":
@@ -478,4 +472,5 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
                         RPC.close()
                         break
 else:
-    print("HOW")
+    print("You cannot run etanbloxxed as a module! or something")
+    exit()
