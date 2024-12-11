@@ -38,9 +38,10 @@ this is my very first **public** python project, so issues are very likely to oc
 
 ## [ planned updates ]
 
-idk where to put planned updates so i jsut put it here
-\> automatically obtaining the player's id
-\> better settings
+idk where to put planned updates so i put it here
+
+\> Better settings
+\> Automatically obtaining user's ID
 
 ## [ other ]
 
