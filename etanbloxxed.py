@@ -35,7 +35,6 @@ creatorname = ""
 gamename = ""
 imageassetid = ""
 ServerType = "Public server"
-islagging = False
 
 notification = Notify()
 notification.title = "etanbloxxed"
@@ -44,7 +43,7 @@ bloxstrapRPCCustomState = {}
 
 # [ functions ] 
 # --internal--
-def printDebug(text): # i rarely use this oops
+def printDebug(text): # i dont think there is a SINGLE occurence of me using this at the time of writing this comment
     global DEBUG
     if DEBUG:
         print("DEBUG | " + str(text))
@@ -53,7 +52,7 @@ def printTemporary(text):
     print(text, end="\r")
 
 def clear():
-    print("                                            ", end="\r")
+    print("                                                      ", end="\r")
 
 def getrandomtext(): # random text bc why not :3 // you can change these if you want to 
     randomtext = ["github powered!", "hello chat", "go join etan's gamers group", "i love underrated roblox games", "inflation goes crazy"]
@@ -413,7 +412,6 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
                                 print("Detected disconnect!")
                                 bloxstrapRPCCustomState.clear()
                                 idleRpc()
-                                islagging = False
                                 cachedstatus = 0
                                     
                             if "Connecting to UDMUX server" in line and cachedstatus == 0: # Handle player actually connecting to server (this mostly happens after getting the place information)
@@ -472,5 +470,5 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
                         RPC.close()
                         break
 else:
-    print("You cannot run etanbloxxed as a module! or something")
+    print("You cannot run etanbloxxed as a module! or something idk")
     exit()
