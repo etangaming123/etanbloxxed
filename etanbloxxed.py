@@ -29,7 +29,7 @@ cachedipadress = ""
 hasRPCwithextras = False
 close = False
 timesthestupidlagmessagehasbeenspammed = 0
-sentlagnotification = False
+sentlagnotification = False 
 
 placeid = ""
 rootplaceid = ""
