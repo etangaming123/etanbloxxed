@@ -17,7 +17,7 @@ import pickle
 import subprocess
 
 # [ variables ]
-VERSION_NO = "RELEASE_1.00.02"
+VERSION_NO = "RELEASE_1.00.03"
 CONFIG_NO = "1.00.00"
 DEBUG = False
 
@@ -28,6 +28,8 @@ cachedstatus = 0
 cachedipadress = ""
 hasRPCwithextras = False
 close = False
+timesthestupidlagmessagehasbeenspammed = 0
+sentlagnotification = False
 
 placeid = ""
 rootplaceid = ""
@@ -301,7 +303,7 @@ def idleRpc(): # set rpc to idle
 
 # [ startup ]
 if __name__ == "__main__": # idk why but gpt added this so (im kidding it has somethign to do with modules or something IDK)
-    literally_all_the_new_features = ["What's new in the latest etanbloxxed update:", "> No longer uses roproxy", "> Requests now continue forever until successful", "> Other stuff that i forgor its 12am rn"] # no way new noticeboard
+    literally_all_the_new_features = ["What's new in the latest etanbloxxed update:", "> Now tells you when your log file gets spammed with lag messages", "that's pretty much it"] # no way new noticeboard
     print(f"Welcome to etanbloxxed!\nThis is basically bloxstrap but bad and poorly optimised\n\nYou are running version {VERSION_NO}.\n")
     for item in literally_all_the_new_features:
         print(item)
@@ -413,6 +415,8 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
                                 bloxstrapRPCCustomState.clear()
                                 idleRpc()
                                 cachedstatus = 0
+                                timesthestupidlagmessagehasbeenspammed = 0
+                                sentlagnotification = False
                                     
                             if "Connecting to UDMUX server" in line and cachedstatus == 0: # Handle player actually connecting to server (this mostly happens after getting the place information)
                                 cachedstatus = 1
@@ -452,6 +456,13 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
                                 rpc_data = line.split("[BloxstrapRPC] ")[1].strip()
                                 command_data = json.loads(rpc_data)
                                 updateCustomRPC(command_data, gamename, bloxstrapRPCCustomState)
+
+                            if "[DFLog::RakNetMissingPingPong]" in line:
+                                timesthestupidlagmessagehasbeenspammed += 1
+                                if timesthestupidlagmessagehasbeenspammed == 100 or timesthestupidlagmessagehasbeenspammed > 100 and not sentlagnotification:
+                                    notification.message = "You've disconnected from the game! (You should probably leave the game now)"
+                                    notification.send()
+                                    sentlagnotification = True
 
                             if close == True:
                                 break
