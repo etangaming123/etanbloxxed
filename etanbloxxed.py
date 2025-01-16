@@ -351,7 +351,7 @@ if __name__ == "__main__": # idk why but gpt added this so (im kidding it has so
             if not iswindows:
                 os.system(f"open {robloxdir}")
             else:
-                subprocess.call(f"{os.path.join(find_latest_modified_directory(os.path.expanduser("~/AppData/Local/Roblox/versions")), "RobloxPlayerBeta")}")
+                subprocess.call(f"{os.path.join(find_latest_modified_directory(os.path.expanduser('~/AppData/Local/Roblox/versions')), 'RobloxPlayerBeta')}")
             print("Opened Roblox")
             close = False
             try:
