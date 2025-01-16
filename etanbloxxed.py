@@ -151,9 +151,9 @@ def getgamedetails(place_id): # getting the details of the game, like name, publ
                 rootPlaceId = data['rootPlaceId']
                 name = data['name']
                 if data['creator']['hasVerifiedBadge']:
-                    creator = f'by {data['creator']['name']} ☑️'
+                    creator = f'by {data["creator"]["name"]} ☑️'
                 else:
-                    creator = f'by {data['creator']['name']}'
+                    creator = f'by {data["creator"]["name"]}'
                 if rootPlaceId is not None and name is not None and creator is not None:
                     clear()
                     break
@@ -196,10 +196,10 @@ def getUsername(): # username and displayname
             data = response.json()
             if data['hasVerifiedBadge']:
                 clear()
-                return f'Playing as {data['displayName']} ☑️ (@{data['name']})'
+                return f'Playing as {data["displayName"]} ☑️ (@{data["name"]})'
             else:
                 clear()
-                return f'Playing as {data['displayName']} (@{data['name']})'
+                return f'Playing as {data["displayName"]} (@{data["name"]})'
         except Exception:
             attemptno += 1
             time.sleep(1)
@@ -267,12 +267,12 @@ def updateCustomRPC(command_data, gamename, current_state): # when games have [B
             current_state['details'] = data['details']
         if 'largeImage' in data:
             if 'assetId' in data['largeImage']:
-                current_state['large_image'] = f'https://assetdelivery.roblox.com/v1/asset/?id={data['largeImage']['assetId']}'
+                current_state['large_image'] = f"https://assetdelivery.roblox.com/v1/asset/?id={data['largeImage']['assetId']}"
             if 'hoverText' in data['largeImage']:
                 current_state['large_text'] = data['largeImage']['hoverText']
         if 'smallImage' in data:
             if 'assetId' in data['smallImage']:
-                current_state['small_image'] = f'https://assetdelivery.roblox.com/v1/asset/?id={data['smallImage']['assetId']}'
+                current_state['small_image'] = f"https://assetdelivery.roblox.com/v1/asset/?id={data['smallImage']['assetId']}"
             if 'hoverText' in data['smallImage']:
                 current_state['small_text'] = data['smallImage']['hoverText']
 
