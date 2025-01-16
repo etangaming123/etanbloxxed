@@ -290,7 +290,7 @@ def updateCustomRPC(command_data, gamename, current_state): # when games have [B
         
         current_state['buttons'] = [{'label': 'get etanbloxxed', 'url': 'https://github.com/etangaming123/etanbloxxed'}, {'label': 'My Current Game', 'url': f'https://www.roblox.com/games/{placeid}/'}]
         RPC.update(**current_state)
-        print(f'state = {current_state['state']}, details = {current_state['details']}')
+        print(f"state = {current_state['state']}, details = {current_state['details']}")
 
 def idleRpc(): # set rpc to idle
     global hasRPCwithextras
