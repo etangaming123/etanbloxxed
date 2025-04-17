@@ -15,7 +15,7 @@ import pickle
 import subprocess
 
 # [ variables ]
-VERSION_NO = 'v1.00.14'
+VERSION_NO = 'v1.00.15'
 CONFIG_NO = '1.00.00'
 DEBUG = True # whether to print out more info or smth idk
 
@@ -216,6 +216,25 @@ def getImageAssetId(placeid): # game image
             attemptno += 1
             clear()
 
+def getImageUrl(imageid): # bloxstrap rpc custom images ig
+    attemptno = 1
+    while True:
+        printTemporary(f'Getting image url... Attempt {attemptno}')
+        try:
+            url = f'https://thumbnails.roblox.com/v1/assets?assetIds={imageid}&size=150x150&format=Png'
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()["data"][0]
+                if not data['imageUrl'] == None or data['imageUrl'] == "":
+                    return data['imageUrl']
+            else:
+                printDebug(response.status_code)
+            attemptno += 1
+        except Exception as e:
+            printDebug(e)
+            attemptno += 1
+            clear()
+
 def get_geolocation(ip_address): # get the country of a server (this thing does not have a while true loop because we don't wanna waste all your requests, do we?)
     if API_KEY == '':
         return 'None'
@@ -264,12 +283,12 @@ def updateCustomRPC(command_data, gamename, current_state): # when games have [B
             current_state['details'] = data['details']
         if 'largeImage' in data:
             if 'assetId' in data['largeImage']:
-                current_state['large_image'] = f"https://assetdelivery.roblox.com/v1/asset?id={data['largeImage']['assetId']}"
+                current_state['large_image'] = getImageUrl(data['largeImage']['assetId'])
             if 'hoverText' in data['largeImage']:
                 current_state['large_text'] = data['largeImage']['hoverText']
         if 'smallImage' in data:
             if 'assetId' in data['smallImage']:
-                current_state['small_image'] = f"https://assetdelivery.roblox.com/v1/asset?id={data['smallImage']['assetId']}"
+                current_state['small_image'] = getImageUrl(data['smallImage']['assetId'])
             if 'hoverText' in data['smallImage']:
                 current_state['small_text'] = data['smallImage']['hoverText']
 
