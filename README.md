@@ -36,20 +36,21 @@ this is my very first **public** python project, so issues are very likely to oc
 
 **Anything**, really! take the code and make it your own, i don't mind!
 
+This script is unlicensed, check it out [here.](./LICENSE)
+
 ## [ planned updates ]
 
 idk where to put planned updates so i put it here
 
 \> Better settings
-\
 
-> Automatically obtaining user's ID
+\> Automatically obtaining user's ID
 
 ## [ credits ]
 
 \> bloxstrap - the icons that show up on discord and some of their source code
 
-> chat gpt - helping with code
+\> chat gpt - helping with code
 
 and you! :3
 
