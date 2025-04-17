@@ -41,11 +41,16 @@ this is my very first **public** python project, so issues are very likely to oc
 idk where to put planned updates so i put it here
 
 \> Better settings
-\> Automatically obtaining user's ID
+\
+
+> Automatically obtaining user's ID
 
 ## [ credits ]
+
 \> bloxstrap - the icons that show up on discord and some of their source code
-\> chat gpt - helping with code
+
+> chat gpt - helping with code
+
 and you! :3
 
 ## [ other ]
