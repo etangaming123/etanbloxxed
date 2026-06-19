@@ -425,13 +425,13 @@ def processLines(line):
 
     if 'destroyLuaApp: (stage:LuaApp) blocking:true.' in line or '[FLog::SingleSurfaceApp] shutDown: (stage:Native).' in line: # Handle roblox closing
         print('Detected Roblox client closed, closing RPC...')
-        RPC.clear()
+        RPC.clear_activity()
         RPC.close()
         close = True
 
     if 'Found new version and the updater launched. Drain reporting and quit.' in line: # Handle roblox updating
         print('Roblox is updating. Rerun etanbloxxed when it is done updating.')
-        RPC.clear()
+        RPC.clear_activity()
         RPC.close()
         close = True
 
