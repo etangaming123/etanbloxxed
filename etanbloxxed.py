@@ -3,7 +3,7 @@
 
 # [ modules ]
 import time
-from pypresence import Presence
+import pypresence
 import requests
 import os
 import re
@@ -16,12 +16,12 @@ import subprocess
 import psutil
 
 # [ variables ]
-VERSION_NO = 'v1.01.16'
+VERSION_NO = 'v1.02.16'
 CONFIG_NO = '1.00.00'
 DEBUG = False # whether to print out more info or smth idk
 
 log_path = os.path.expanduser('~/Library/Logs/Roblox')
-RPC = Presence(client_id=1229562048640319616) # change the id if you want
+RPC = pypresence.Client(client_id=1229562048640319616) # change the id if you want
 cachedstatus = 0
 cachedipadress = ''
 hasRPCwithextras = False
@@ -34,11 +34,19 @@ placeid = ''
 creatorname = ''
 gamename = ''
 imageassetid = ''
+currentuserusername = ''
+currentuserdisplayname = ''
+verified = False
 
 notification = notifypy.Notify()
 notification.title = 'etanbloxxed'
 
 bloxstrapRPCCustomState = {}
+
+alreadyreadlines = []
+whatthehelliswrongwithmyscript = False
+
+lastlog = ""
 
 # [ functions ] 
 # --internal--
@@ -80,18 +88,18 @@ def follow(thefile): # also gpt written
         yield line
 
 def find_latest_modified_directory(folder_path): # also also gpt written
-  latest_modified_dir = None
-  latest_modification_time = 0
+    latest_modified_dir = None
+    latest_modification_time = 0
 
-  for dir_name in os.listdir(folder_path):
-    dir_path = os.path.join(folder_path, dir_name)
-    if os.path.isdir(dir_path):
-      modification_time = os.path.getmtime(dir_path)
-      if modification_time > latest_modification_time:
-        latest_modified_dir = dir_path
-        latest_modification_time = modification_time
+    for dir_name in os.listdir(folder_path):
+        dir_path = os.path.join(folder_path, dir_name)
+        if os.path.isdir(dir_path):
+            modification_time = os.path.getmtime(dir_path)
+        if modification_time > latest_modification_time:
+            latest_modified_dir = dir_path
+            latest_modification_time = modification_time
 
-  return latest_modified_dir
+    return latest_modified_dir
 
 def askforyesorno(ask): # not gpt written surprisingly
     yesdefinitions = ['yes', 'y', 'true', 'yeah']
@@ -121,13 +129,14 @@ def askconfiguration(): # im gonna rewrite this bruh
     return thingo
 
 def clearCached():
-    global placeid, universeid, creatorname, gamename, imageassetid, cachedstatus
+    global placeid, universeid, creatorname, gamename, imageassetid, cachedstatus, alreadyreadlines
     placeid = ''
     universeid = ''
     creatorname = ''
     gamename = ''
     imageassetid = ''
     cachedstatus = 0
+    alreadyreadlines = []
 
 # --requests--
 # MESSY CODE AHEAD BTW
@@ -183,6 +192,8 @@ def getUserPFP(): # user pfp as url so that it shows up on discord
             elif response.status_code == 200:
                 data = response.json()
                 clear()
+                if data['data'][0]['imageUrl'] == None or data['data'][0]['imageUrl'] == "":
+                    return 'etanbloxxed_main'
                 return data['data'][0]['imageUrl']
         except Exception as e:
             printDebug(e)
@@ -190,9 +201,14 @@ def getUserPFP(): # user pfp as url so that it shows up on discord
             clear()
 
 def getUsername(): # username and displayname
-    global userid
+    global userid, currentuserusername, currentuserdisplayname, verified
     if userid == '':
         return 'etanbloxxed is a knockoff bloxstrap rpc, go check out bloxstrap!'
+    if currentuserusername != '' and currentuserdisplayname != '':
+        if verified:
+            return f'Playing as {currentuserdisplayname} ☑️ (@{currentuserusername})'
+        else:
+            return f'Playing as {currentuserdisplayname} (@{currentuserusername})'
     attemptno = 1
     while True:
         printTemporary(f'Getting username and displayname... Attempt {attemptno}')
@@ -209,9 +225,15 @@ def getUsername(): # username and displayname
                 if 'hasVerifiedBadge' in data.keys():
                     if data['hasVerifiedBadge']:
                         clear()
+                        currentuserusername = data['name']
+                        currentuserdisplayname = data['displayName']
+                        verified = True
                         return f'Playing as {data["displayName"]} ☑️ (@{data["name"]})'
                     else:
                         clear()
+                        currentuserusername = data['name']
+                        currentuserdisplayname = data['displayName']
+                        verified = False
                         return f'Playing as {data["displayName"]} (@{data["name"]})'
                 else:
                     clear()
@@ -286,16 +308,16 @@ def updateRpc(newrpc, placeid): # yeah
             if imageassetid == '':
                 imageassetid = getImageAssetId(placeid)
             if not newrpc == '':
-                RPC.update(details=f'Roblox - {newrpc}', state=getUsername(), large_image=imageassetid, large_text=newrpc, small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{'label': 'get etanbloxxed', 'url': 'https://github.com/etangaming123/etanbloxxed'}, {'label': 'My Current Game', 'url': f'https://www.roproxy.com/games/{placeid}/'}])
+                RPC.set_activity(name=f'{newrpc}', details=f'{newrpc}', state=getUsername(), large_image=imageassetid, large_text=newrpc, small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{'label': 'get etanbloxxed', 'url': 'https://github.com/etangaming123/etanbloxxed'}, {'label': 'My Current Game', 'url': f'https://www.roproxy.com/games/{placeid}/'}])
                 bloxstrapRPCCustomState = {'details': f'Roblox - {newrpc}', 'state': getUsername(), 'large_image': imageassetid, 'large_text': newrpc, 'small_image': getUserPFP(), 'small_text': getUsername(), 'start': time.time(), 'buttons': [{'label': 'get etanbloxxed', 'url': 'https://github.com/etangaming123/etanbloxxed'}, {'label': 'My Current Game', 'url': f'https://www.roproxy.com/games/{placeid}/'}]}
                 print('RPC set to ' + newrpc)
                 hasRPCwithextras = True
             else:
                 if not placeid == '': # this is when we have the placeid but getting the game name fails
                     hasRPCwithextras = False
-                    RPC.update(details=f'Roblox - Game ID: {placeid}', state=getUsername(), large_image='etanbloxxed_main', large_text=placeid, small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{'label': 'get etanbloxxed', 'url': 'https://github.com/etangaming123/etanbloxxed'}, {'label': 'My Current Game', 'url': f'https://www.roproxy.com/games/{placeid}/'}])
+                    RPC.set_activity(name=f'etanbloxxed', details=f'Roblox - Game ID: {placeid}', state=getUsername(), large_image='etanbloxxed_main', large_text=placeid, small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{'label': 'get etanbloxxed', 'url': 'https://github.com/etangaming123/etanbloxxed'}, {'label': 'My Current Game', 'url': f'https://www.roproxy.com/games/{placeid}/'}])
                 else:
-                    RPC.update(details=f'Roblox - Unknown Game', state=getUsername(), large_image='etanbloxxed_error', large_text='idk what this guys playing', small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{'label': 'get etanbloxxed', 'url': 'https://github.com/etangaming123/etanbloxxed'}])
+                    RPC.set_activity(name=f'etanbloxxed', details=f'Roblox - Unknown Game', state=getUsername(), large_image='etanbloxxed_error', large_text='idk what this guys playing', small_image=getUserPFP(), small_text=getUsername(), start=time.time(), buttons=[{'label': 'get etanbloxxed', 'url': 'https://github.com/etangaming123/etanbloxxed'}])
                 print('RPC set with default message')
         except Exception:
             print('An error occured while setting RPC!')
@@ -349,14 +371,17 @@ def idleRpc(): # set rpc to idle
     if rpcenabled:
         hasRPCwithextras = False
         try:
-            RPC.update(details='Roblox', state=getUsername(), large_image='etanbloxxed_idle', large_text=getrandomtext(), small_image=getUserPFP(), small_text=getUsername(), buttons=[{'label': 'get etanbloxxed', 'url': 'https://github.com/etangaming123/etanbloxxed'}])
+            RPC.set_activity(name="Roblox", details='Roblox', state=getUsername(), large_image='etanbloxxed_idle', large_text=getrandomtext(), small_image=getUserPFP(), small_text=getUsername(), buttons=[{'label': 'get etanbloxxed', 'url': 'https://github.com/etangaming123/etanbloxxed'}])
         except Exception:
             traceback.print_exc()
             print('An error occured while setting RPC!')
 
 def processLines(line):
-    global placeid, universeid, creatorname, gamename, imageassetid, cachedstatus, cachedipadress, bloxstrapRPCCustomState, close
-    if '[FLog::GameJoinLoadTime] Report game_join_loadtime:' in line:
+    global placeid, universeid, creatorname, gamename, imageassetid, cachedstatus, cachedipadress, bloxstrapRPCCustomState, close, alreadyreadlines
+    if line in alreadyreadlines:
+        return
+    alreadyreadlines.append(line)
+    if '[FLog::GameJoinLoadTime] Report game_join_loadtime:' in line and cachedstatus == 0: # Handle player joining game
         match = re.search(r"placeid:(\d+).*universeid:(\d+)", line)
         if match:
             placeid = match.group(1)
@@ -400,11 +425,13 @@ def processLines(line):
 
     if 'destroyLuaApp: (stage:LuaApp) blocking:true.' in line or '[FLog::SingleSurfaceApp] shutDown: (stage:Native).' in line: # Handle roblox closing
         print('Detected Roblox client closed, closing RPC...')
+        RPC.clear()
         RPC.close()
         close = True
 
     if 'Found new version and the updater launched. Drain reporting and quit.' in line: # Handle roblox updating
         print('Roblox is updating. Rerun etanbloxxed when it is done updating.')
+        RPC.clear()
         RPC.close()
         close = True
 
@@ -418,26 +445,25 @@ def theactualetanbloxxedshi(logfile, readexisting):
     print('Starting etanbloxxed...')
     try:
         print('Connecting to Discord...')
-        Presence.connect(self=RPC)
+        RPC.start()
         idleRpc()
         print('Connected to Discord')
     except Exception:
         print('Failed to connect to Discord! RPC will be disabled for this session.\nIs Discord installed and running?')
         traceback.print_exc()
         rpcenabled = False
+    whatthehelliswrongwithmyscript = False
     while True:
         try:
-            if readexisting:
-                time.sleep(1)
+            if readexisting and not whatthehelliswrongwithmyscript:
+                print("Waiting...")
+                time.sleep(3) # wait a few seconds to make sure roblox has written some lines
                 # Read all existing lines first
                 print('Reading existing lines in log file...')
-                logfile.seek(0)
-                loglines = (line for line in logfile)
-                for line in loglines:
+                whatthehelliswrongwithmyscript = True
+                for line in logfile:
                     processLines(line)
                     time.sleep(0)
-                    if close == True:
-                        break
             close = False
             print('Following new lines in log file...')
             loglines = follow(logfile)
@@ -457,6 +483,7 @@ def theactualetanbloxxedshi(logfile, readexisting):
         
         except KeyboardInterrupt: 
             print('Ctrl + c detected, closing RPC...')
+            RPC.clear_activity()
             RPC.close()
             break
 
@@ -539,12 +566,12 @@ if __name__ == '__main__': # idk why but gpt added this so (im kidding it has so
                             theactualetanbloxxedshi(logfile, True)
                         clearCached()
                         print("etanbloxxed is still scanning!")
-                        lastlog = currentlog
+                    lastlog = currentlog
                     time.sleep(1)
                 except KeyboardInterrupt:
                     print('Scanner stopped.')
                     break
- 
+
 else:
     print('You cannot run etanbloxxed as a module! or something idk')
     exit()
