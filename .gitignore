@@ -1,2 +1,9 @@
 .vscode/
 .DS_STORE
+assets/
+etanbloxxed_remote.py
+etanbloxxed_studio.py
+etanbloxxed_vr.py
+*.pkl
+*.json
+FAKEBLOXXED.py

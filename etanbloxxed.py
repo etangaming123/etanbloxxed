@@ -16,7 +16,7 @@ import subprocess
 import psutil
 
 # [ variables ]
-VERSION_NO = 'v1.02.16'
+VERSION_NO = 'v1.02.17'
 CONFIG_NO = '1.00.00'
 DEBUG = False # whether to print out more info or smth idk
 
@@ -489,7 +489,7 @@ def theactualetanbloxxedshi(logfile, readexisting):
 
 # [ startup ]
 if __name__ == '__main__': # idk why but gpt added this so (im kidding it has somethign to do with modules or something IDK)
-    literally_all_the_new_features = ['What\'s new in the latest etanbloxxed update:', '> new scan command! run scan and minimise ur command prompt so etanbloxxed will automatically start up whenever roblox is launched!', '> few extra tweaks that idk about', '> etanbloxxed may be fully rewritten soon'] # no way new noticeboard
+    literally_all_the_new_features = ['What\'s new in the latest etanbloxxed update:', '> Preparing for a rewrite.', '> now shows the game that you\'re in AS the actual status (i.e instead of playing etanbloxxed it\'s playing something)'] # no way new noticeboard
     print(f'Welcome to etanbloxxed!\nThis is basically bloxstrap but bad and poorly optimised\n\nYou are running version {VERSION_NO}.\n')
     for item in literally_all_the_new_features:
         print(item)
