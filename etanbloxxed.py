@@ -16,7 +16,7 @@ import subprocess
 import psutil
 
 # [ variables ]
-VERSION_NO = 'v1.02.17'
+VERSION_NO = 'v1.02.18'
 CONFIG_NO = '1.00.00'
 DEBUG = False # whether to print out more info or smth idk
 
@@ -426,13 +426,11 @@ def processLines(line):
     if 'destroyLuaApp: (stage:LuaApp) blocking:true.' in line or '[FLog::SingleSurfaceApp] shutDown: (stage:Native).' in line: # Handle roblox closing
         print('Detected Roblox client closed, closing RPC...')
         RPC.clear_activity()
-        RPC.close()
         close = True
 
     if 'Found new version and the updater launched. Drain reporting and quit.' in line: # Handle roblox updating
         print('Roblox is updating. Rerun etanbloxxed when it is done updating.')
         RPC.clear_activity()
-        RPC.close()
         close = True
 
     if '[BloxstrapRPC]' in line: # ohhh crap bloxstrap rpc !!
@@ -445,7 +443,6 @@ def theactualetanbloxxedshi(logfile, readexisting):
     print('Starting etanbloxxed...')
     try:
         print('Connecting to Discord...')
-        RPC.start()
         idleRpc()
         print('Connected to Discord')
     except Exception:
@@ -484,12 +481,17 @@ def theactualetanbloxxedshi(logfile, readexisting):
         except KeyboardInterrupt: 
             print('Ctrl + c detected, closing RPC...')
             RPC.clear_activity()
-            RPC.close()
             break
 
 # [ startup ]
 if __name__ == '__main__': # idk why but gpt added this so (im kidding it has somethign to do with modules or something IDK)
-    literally_all_the_new_features = ['What\'s new in the latest etanbloxxed update:', '> Preparing for a rewrite.', '> now shows the game that you\'re in AS the actual status (i.e instead of playing etanbloxxed it\'s playing something)'] # no way new noticeboard
+    print("Connecting to Discord...")
+    try:
+        RPC.start()
+    except Exception as e:
+        print("Couldn't connect to Discord - is Discord running?")
+        rpcenabled = False
+    literally_all_the_new_features = ['What\'s new in the latest etanbloxxed update:', '> etanbloxxed now connects to Discord on startup, rather than on Roblox opening'] # no way new noticeboard
     print(f'Welcome to etanbloxxed!\nThis is basically bloxstrap but bad and poorly optimised\n\nYou are running version {VERSION_NO}.\n')
     for item in literally_all_the_new_features:
         print(item)
