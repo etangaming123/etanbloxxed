@@ -26,7 +26,17 @@ this is basically more or less a remake of Bloxstrap's Roblox RPC
 
 ### --how do i use it?--
 
-download an etanbloxxed script (e.g etanbloxxed_macos.py for macos, etanbloxxed_windows.py for windows), then just run etanbloxxed! etanbloxxed will ask you for settings (ipinfo api key, userid etc.), then, when you run the script, it will automatically run roblox! it's as easy as that!
+clone/download this repo, install the dependencies with `pip install -r requirements.txt`, then run etanbloxxed with:
+
+```
+python -m etanbloxxed
+```
+
+(pass `--debug` for verbose output, e.g. `python -m etanbloxxed --debug`)
+
+etanbloxxed will ask you for settings (ipinfo api key, userid etc.) on first run and save them to `etanbloxxedconfig.json` (a plain JSON file you can also hand-edit), then it's as easy as typing `open` to launch Roblox with the RPC running!
+
+if you're upgrading from an older version that used `etanbloxxedconfig.pkl`, etanbloxxed will automatically migrate your settings to the new JSON config the first time you run it.
 
 ### --i found an issue--
 
@@ -41,8 +51,6 @@ This script is unlicensed, check it out [here.](./LICENSE)
 ## [ planned updates ]
 
 idk where to put planned updates so i put it here
-
-\> Better settings
 
 \> Automatically obtaining user's ID
 

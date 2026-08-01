@@ -1,2 +1,6 @@
 .vscode/
 .DS_STORE
+__pycache__/
+*.pyc
+etanbloxxedconfig.json
+etanbloxxedconfig.pkl
