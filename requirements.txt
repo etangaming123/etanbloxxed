@@ -1,3 +1,4 @@
 pypresence
 requests
 notifypy
+psutil
