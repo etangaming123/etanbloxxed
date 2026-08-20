@@ -25,6 +25,7 @@ def game_buttons(place_id: Optional[str]) -> list[dict]:
 
 class DiscordPresence:
     def __init__(self, client_id: int, api: RobloxApiClient, user_id: str):
+        self.client_id = client_id
         self.client = pypresence.Client(client_id=client_id)
         self.api = api
         self.user_id = user_id
@@ -34,6 +35,11 @@ class DiscordPresence:
 
     def connect(self) -> bool:
         try:
+            # A closed pypresence Client can't be restarted in place (its IPC
+            # pipe stays dead), so build a fresh one for every connect attempt
+            # instead of reusing whatever clear_and_close() left behind.
+            self.client = pypresence.Client(client_id=self.client_id)
+            self.enabled = True
             self.client.start()
             self.set_idle()
             return True
