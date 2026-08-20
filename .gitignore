@@ -4,3 +4,10 @@ __pycache__/
 *.pyc
 etanbloxxedconfig.json
 etanbloxxedconfig.pkl
+etanbloxxed_remote.py
+etanbloxxed_studio.py
+etanbloxxed_vr.py
+FAKEBLOXXED.py
+assets/
+etanbloxxed.code-workspace
+.claude

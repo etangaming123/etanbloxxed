@@ -55,8 +55,8 @@ RARE_IDLE_CHANCE = 33
 LOG_MARKER_GAME_JOIN = "[FLog::GameJoinLoadTime] Report game_join_loadtime:"
 LOG_MARKER_DISCONNECT = "[FLog::Network] Time to disconnect replication data:"
 LOG_MARKER_UDMUX = "Connecting to UDMUX server"
-LOG_MARKER_CLIENT_CLOSED_1 = "destroyLuaApp: (stage:LuaApp) blocking:true."
-LOG_MARKER_CLIENT_CLOSED_2 = "[FLog::SingleSurfaceApp] shutDown: (stage:Native)."
+LOG_MARKER_CLIENT_CLOSED_1 = "[DFLog::SystemDialogHandler] Platform handler was destroyed."
+LOG_MARKER_CLIENT_CLOSED_2 = "[FLog::SingleSurfaceApp] destroyLuaApp: (stage:LuaApp) blocking:true."
 LOG_MARKER_UPDATING = "Found new version and the updater launched. Drain reporting and quit."
 LOG_MARKER_BLOXSTRAP_RPC = "[BloxstrapRPC]"
 

@@ -127,7 +127,7 @@ def main() -> None:
                 print("Could not find a Roblox log file. Is Roblox running?")
                 continue
             print(f"Scanning log file {log_file_path}")
-            with open(log_file_path, "r", encoding="utf-8") as logfile:
+            with open(log_file_path, "r", encoding="utf-8", errors="replace") as logfile:
                 watcher.run(logfile, read_existing=False)
 
         elif user_input == "scan":
@@ -146,7 +146,7 @@ def main() -> None:
                     if current_log != last_log:
                         print("New log file detected, running etanbloxxed...")
                         watcher.reset()
-                        with open(current_log, "r", encoding="utf-8") as logfile:
+                        with open(current_log, "r", encoding="utf-8", errors="replace") as logfile:
                             watcher.run(logfile, read_existing=True)
                         print("etanbloxxed is still scanning!")
                     last_log = current_log
